@@ -1,0 +1,47 @@
+.login{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url(../../public/images/bg.jpg) center center no-repeat;
+    background-size: cover;
+    z-index: -1;
+    .loginBox{
+        width: 350px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        .welcome{
+            font-size: 20px;
+            font-weight: 500;
+            margin: 10px 0px 20px;
+        }
+        .codeInput{
+            width: 50%;
+        }
+        .formBottom {
+            a{
+                color: #409eff;
+            }
+            span{
+                padding: 0 4px;
+            }
+        }
+        
+    }
+    .el-form{
+        padding: 0px 20px;
+        .el-input__prefix{
+            color: #409eff
+        }
+        .el-input__inner{
+            border: none;
+            border-bottom: 1px solid #dcdfe6;
+            border-radius: 0px;
+        }
+        .landing{
+            width: 100%;
+        }
+    }
+
+}

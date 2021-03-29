@@ -1,0 +1,53 @@
+@mixin tran {
+    -webkit-transition: all 0.5s ease 0s;
+    -moz-transition: all 0.5s ease 0s;
+    -o-transition: all 0.5s ease 0s;
+    -ms-transition: all 0.5s ease 0s;
+    transition: all 0.5s ease 0s;
+  }
+.el-aside{
+    height: 100vh;
+    background-color: #252b38;
+    color: #fff;
+    a{
+        color: #fff;
+    }
+    .iconfont{
+        color: #fff;
+        margin-right: 6px;
+    }
+    .el-menu{
+        border: none !important
+    }
+    .el-submenu__title i{
+        color: #fff !important
+    }
+}
+.open{
+    width: 200px !important;
+    @include tran;
+}
+.down{
+    width: 64px !important;
+    @include tran;
+}
+.el-header{
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.219);
+}
+.el-menu,.el-popper.is-light{
+    background-color: #252b38 !important;
+    border: none !important
+}
+.el-submenu__title:hover, .el-menu-item:hover{
+    background-color: rgba(255, 255, 255, 0.301) !important
+}
+.el-aside .el-menu .is-active{
+    background-color: rgba(25, 25, 26, 0.541) !important
+}
+.el-aside .el-menu .is-opened >i,.el-aside .el-menu .is-active .iconfont{
+    color: #409eff !important
+}
+.el-aside .el-menu .is-active>.el-submenu__title{
+    color: #409eff !important;
+    background-color: rgb(25, 25, 26) !important
+}

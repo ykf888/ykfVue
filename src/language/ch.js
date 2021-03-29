@@ -1,0 +1,19 @@
+module.exports={
+    chlang:{
+        name:"中文语言"
+    },
+    aside:{
+        home:"首页",
+        managementALl:"管理总台",
+        role:"角色管理",
+        userList:"用户列表",
+        menuMangent:"菜单管理",
+        infoMangent:"信息管理",
+        infoList:"信息列表",
+        infoCategory:"信息类别",
+        productMangent:"产品管理",
+        productList:"产品列表",
+        productCtegory:"产品类别",
+        vipMangent:"会员管理",
+    }
+}
