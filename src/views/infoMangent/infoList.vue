@@ -3,7 +3,7 @@
 </template>
 <script>
 export default {
-    name:"infoList",
+    name:"infoLists",
     setup(props){}
 }
 </script>
