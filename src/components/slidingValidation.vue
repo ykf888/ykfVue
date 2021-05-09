@@ -5,6 +5,7 @@
 import {onMounted, ref,getCurrentInstance} from "vue"
 import "@/kit/awsc"
 export default {
+    emits:['update:token'],
     props:{
         token:{
             type:String,

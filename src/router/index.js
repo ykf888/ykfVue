@@ -187,7 +187,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 });
-const whiterouter=['/login']
+const whiterouter=['/login','/registered','/forgotPasd']
 router.beforeEach((to,from,netx)=>{
   if (get_token()) {
     if (to.path==='/login') {
@@ -203,5 +203,4 @@ router.beforeEach((to,from,netx)=>{
     }
   }
 })
-
 export default router;

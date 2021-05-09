@@ -51,3 +51,11 @@
     color: #409eff !important;
     background-color: rgb(25, 25, 26) !important
 }
+.el-submenu__title{
+    width: 100%;
+}
+.el-menu span,.el-menu li{
+    overflow: hidden;/*超出部分隐藏*/
+    white-space: nowrap;/*不换行*/
+    text-overflow:ellipsis;/*超出部分文字以...显示*/
+}

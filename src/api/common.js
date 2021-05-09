@@ -4,7 +4,6 @@ const requestUrl ={
     getTableDate:"ceshiceshi"
 }
 
-// 获取验证码
 export  function getList(prome){
     let data ={
         tableData: [

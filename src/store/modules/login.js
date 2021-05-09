@@ -16,10 +16,10 @@ let state = {
     }
   },
   actions = {
-    login({ commit }) {
+    login({ commit },datas) {
       let data = {
-        token:'ttttttoken',
-        username:'13335802671'
+        token:datas.token,
+        username:datas.username
       }
       return new Promise((resolve,reject)=>{
         commit('SET_TOKEN', data.token)

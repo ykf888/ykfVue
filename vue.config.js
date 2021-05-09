@@ -43,9 +43,9 @@ module.exports = {
           target: process.env.VUE_APP_URL, //API服务器的地址  http://www.web-jshtml.cn/api  http://www.web-jshtml.cn/vue_admin_api/token
           changeOrigin: true,
           ws:false,
-          pathRewrite: {
-              [`^${process.env.VUE_APP_FLAG}`]: ''
-          }
+          // pathRewrite: {
+          //     [`^${process.env.VUE_APP_FLAG}`]: ''
+          // }
       }
     },
     overlay: { // 全屏模式下是否显示脚本错误

@@ -1,13 +1,13 @@
 <template>
 
   <el-menu
-    :default-active="opemPath"
+    :default-active="opemPaths"
     class="el-menu-vertical-demo"
     background-color="#fff0"
     text-color="#fff"
     :collapse="isCollapse"
     :unique-opened="true"
-    @select="select"
+
     router
     active-text-color="#409EFF"
   >
@@ -35,8 +35,9 @@ import Menu from "@/views/layout/aside/Menu.vue"
 export default {
   components:{ Menu },
   setup(props) {
-    const { ctx } = getCurrentInstance();
+    const { proxy } = getCurrentInstance();
     const { options } = useRouter();
+    
     let store = useStore()
     const isCollapse =computed(()=>store.getters['header/isCollapse'])
   
@@ -44,12 +45,12 @@ export default {
     const routerItems = JSON.parse(JSON.stringify(options.routes));
     
     // 点击时缓存当前的路由路径---
-    const select =(key, keyPath)=>{
-      let data = JSON.stringify(keyPath)
-      localStorage.setItem("openKey",data)
-    }
-    let localdata = JSON.parse(localStorage.getItem("openKey"))
-    const opemPath  =ref(localdata?localdata.pop():"")
+
+    const opemPaths=computed(()=>{
+      const router =useRoute()
+      const {path}=router
+      return path
+    })
     const haveChildren=(data)=>{
       if (!data.children) {
         return false
@@ -73,8 +74,8 @@ export default {
 
     return {
 
-      isCollapse,opemPath,routerItems,
-      select,haveChildren
+      isCollapse,routerItems,opemPaths
+      ,haveChildren
     };
   }
 };

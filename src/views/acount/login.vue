@@ -19,6 +19,9 @@
                 <el-form-item>
                     <el-button type="primary" class="landing" @click="submitForm">登陆</el-button>
                 </el-form-item>
+                 <el-form-item>
+                   <GetCode :formItem="formItem"/>
+                 </el-form-item>
             </el-form>
             <div class="formBottom texe-center font-12">
                 <router-link to="/forgotPasd">忘记密码</router-link>
@@ -36,18 +39,19 @@ import md5 from "js-md5";
 import { ElMessage } from 'element-plus'
 import { useRouter, useRoute } from "vue-router";
 import{stripscript,checkIphone,checkPassword,checkVerification} from"@/kit/validate"
-import {GetSms} from "@/api/login"
+import {GetSms,Login} from "@/api/login"
 import slidingValidation  from "@/components/slidingValidation"
 import { useStore } from "vuex";
+import GetCode from "./getCode"
 export default {
     name:"Login",
-    components:{slidingValidation},
+    components:{slidingValidation,GetCode},
     setup(props){
     const store = useStore()
     const router = useRouter();
     const route = useRoute();
     const getfrom = ref(null)
-    const {ctx,proxy} =getCurrentInstance()
+    const {proxy} =getCurrentInstance()
     // 表单用户名规则-----
     let name = (rule, value, callback) => {
       if (value === "") {
@@ -129,9 +133,18 @@ export default {
           }
             let responseData = JSON.parse(JSON.stringify(formItem)) 
             responseData.password=md5(responseData.password)
-            store.dispatch('login/login').then(()=>{
+            let datas={
+              username:responseData.name,
+              password:responseData.password
+            }
+            Login(datas).then(res=>{
+              store.dispatch('login/login',res.content).then(()=>{
               router.push("/index")
             })
+            }).catch(error=>{
+
+            })
+           
             
           } else {
             console.log('error submit!!');
@@ -150,7 +163,8 @@ export default {
         return false
       }
       let resquestData={
-        username: 13335802671
+        username: 13335802671,
+        type:"Login"
       }
       GetSms(resquestData).then(requsion=>{
         console.log(requsion)

@@ -144,7 +144,8 @@ export default {
         return false
       }
       let resquestData={
-        username: 13335802671
+        username: 13335802671,
+        type:"Forget"
       }
       GetSms(resquestData).then(requsion=>{
         console.log(requsion)

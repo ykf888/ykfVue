@@ -80,14 +80,14 @@ import {
   checkPassword,
   checkVerification
 } from "@/kit/validate";
-import { GetSms } from "@/api/login";
+import { GetSms ,Register} from "@/api/login";
 import slidingValidation from "@/components/slidingValidation";
 export default {
   name: "Login",
   components: { slidingValidation },
   setup(props) {
     const getfrom = ref(null);
-    const { ctx } = getCurrentInstance();
+    const { proxy } = getCurrentInstance();
     // 表单用户名规则-----
     let name = (rule, value, callback) => {
       if (value === "") {
@@ -163,7 +163,7 @@ export default {
     console.log(formItem.token);
     // 提交表单按钮---
     const submitForm = async () => {
-      ctx.getfrom.validate(valid => {
+      proxy.getfrom.validate(valid => {
         if (valid) {
           if (!formItem.token) {
             ElMessage.error({ message: "请完成滑动验证" });
@@ -171,8 +171,17 @@ export default {
           }
           let responseData = JSON.parse(JSON.stringify(formItem));
           responseData.password = md5(responseData.password);
-          ctx.$router.push({ name: "login" });
-          console.log(formItem);
+          proxy.$router.push({ name: "login" });
+          let datas={
+            username:responseData.name,
+            password:responseData.password,
+            code:responseData.code
+          }
+          Register(datas).then(res=>{
+            console.log(res)
+          }).catch(error=>{
+
+          })
         } else {
           console.log("error submit!!");
           return false;
@@ -189,7 +198,8 @@ export default {
         return false;
       }
       let resquestData = {
-        username: 13335802671
+        username: 13335802671,
+        type:"Register",
       };
       GetSms(resquestData)
         .then(requsion => {
