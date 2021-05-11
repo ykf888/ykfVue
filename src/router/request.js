@@ -18,12 +18,13 @@ service.interceptors.request.use(function (config) {
 service.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   let data = response.data
+
   if (data.error_code === 0 && data) {
     if (data.content === null) {
       ElMessage.error({message:data.msg});
       return false
     }
-    ElMessage.success({ message: data.msg + data.content });
+    ElMessage.success({ message: data.msg});
   } else {
     ElMessage.error({ message: data.msg });
   }

@@ -35,7 +35,7 @@ import {computed, onMounted, reactive, toRefs,unref,ref,isRef, toRef,getCurrentI
 import md5 from "js-md5";
 import { ElMessage } from 'element-plus'
 import{stripscript,checkIphone,checkPassword,checkVerification} from"@/kit/validate"
-import {GetSms} from "@/api/login"
+import {GetSms,Check} from "@/api/login"
 import slidingValidation  from "@/components/slidingValidation"
 export default {
     name:"Login",
@@ -50,7 +50,18 @@ export default {
       } else if (!checkIphone(value)) {
         callback(new Error("手机号格式有误"));
       } else {
-        callback();
+         Check({ username: formItem.name }).then(res => {
+            console.log(res);
+            let data = res.content.user;
+            if (data === true) {
+              variable.codeBtn = false;
+               callback();
+            } else {
+              variable.codeBtn = true;
+              callback(new Error("用户名不存在"));
+              return false;
+            }
+          }).catch(error => {});
       }
     };
     // 表单密码规则-----
@@ -103,7 +114,7 @@ export default {
     });
 
     const formItem =reactive({
-          name: "13335802671",
+          name: "",
           password: "",
           passwordAgain:"",
           code:"",
@@ -144,7 +155,7 @@ export default {
         return false
       }
       let resquestData={
-        username: 13335802671,
+        username: formItem.name,
         type:"Forget"
       }
       GetSms(resquestData).then(requsion=>{

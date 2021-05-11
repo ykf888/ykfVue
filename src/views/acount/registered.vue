@@ -61,14 +61,10 @@
 </template>
 <script>
 import {
-  computed,
   onMounted,
   reactive,
   toRefs,
-  unref,
   ref,
-  isRef,
-  toRef,
   getCurrentInstance,
   watch
 } from "vue";
@@ -80,14 +76,17 @@ import {
   checkPassword,
   checkVerification
 } from "@/kit/validate";
-import { GetSms ,Register} from "@/api/login";
+import { GetSms, Register, Check } from "@/api/login";
 import slidingValidation from "@/components/slidingValidation";
+import { useRouter, useRoute } from "vue-router";
 export default {
   name: "Login",
   components: { slidingValidation },
   setup(props) {
     const getfrom = ref(null);
     const { proxy } = getCurrentInstance();
+    const router = useRouter();
+
     // 表单用户名规则-----
     let name = (rule, value, callback) => {
       if (value === "") {
@@ -95,9 +94,11 @@ export default {
       } else if (!checkIphone(value)) {
         callback(new Error("手机号格式有误"));
       } else {
-        callback();
+        variable.codeBtn = false;
+         callback();
       }
     };
+
     // 表单密码规则-----
     let password = (rule, value, callback) => {
       formItem.password = stripscript(value);
@@ -134,7 +135,7 @@ export default {
     };
     // 获取验证码按钮样式管理----
     const variable = reactive({
-      codeBtn: false,
+      codeBtn: true,
       loadSty: false,
       codeBtnName: "获取验证码",
       countdownTima: null
@@ -148,7 +149,7 @@ export default {
     });
 
     const formItem = reactive({
-      name: "13335802671",
+      name: "",
       password: "",
       passwordAgain: "",
       code: "",
@@ -157,10 +158,10 @@ export default {
     watch(
       () => formItem.token,
       value => {
-        console.log(value);
+      
       }
     );
-    console.log(formItem.token);
+  
     // 提交表单按钮---
     const submitForm = async () => {
       proxy.getfrom.validate(valid => {
@@ -171,25 +172,28 @@ export default {
           }
           let responseData = JSON.parse(JSON.stringify(formItem));
           responseData.password = md5(responseData.password);
-          proxy.$router.push({ name: "login" });
-          let datas={
-            username:responseData.name,
-            password:responseData.password,
-            code:responseData.code
-          }
-          Register(datas).then(res=>{
-            console.log(res)
-          }).catch(error=>{
-
-          })
+          router.replace({ name: "login" });
+          let datas = {
+            username: responseData.name,
+            password: responseData.password,
+            code: responseData.code
+          };
+          Register(datas)
+            .then(res => {
+              console.log(res);
+            })
+            .catch(error => {});
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     };
+
     // 获取验证码方法---
-    const getCode = () => {
+    const getCode = async() => {
+      const checkType= await getCheck()
+      if(checkType){return false}
       if (formItem.name === "") {
         ElMessage.error({ message: "请输入手机号" });
         return false;
@@ -198,17 +202,28 @@ export default {
         return false;
       }
       let resquestData = {
-        username: 13335802671,
-        type:"Register",
+        username: formItem.name,
+        type: "Register"
       };
       GetSms(resquestData)
         .then(requsion => {
-          console.log(requsion);
+        
         })
         .catch(error => {
-          console.log(error);
         });
       countdown(6);
+    };
+    const getCheck = () => {
+      return Check({ username: formItem.name })
+        .then(res => {
+          let data = res.content.user;
+          if (data) {
+             ElMessage.error({message:res.msg})
+          }
+          return data
+        
+        })
+        .catch(error => {});
     };
     // 验证码按钮状态方法---
     const changeCodeBtn = promise => {
