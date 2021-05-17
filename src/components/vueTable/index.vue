@@ -12,7 +12,7 @@
     <template v-for="item in data.tableCofige.tabHead" :key="item.prop">
       <el-table-column v-if="item.slot ==='slot'" :prop="item.prop" :label="item.label" >
         <template #default="scope">
-           <slot name="swith" :data="scope.row"></slot>
+           <slot :name="item.slotName" :data="scope.row"></slot>
         </template>
           
       </el-table-column>

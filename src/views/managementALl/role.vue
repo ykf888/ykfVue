@@ -9,6 +9,10 @@
       >
       </el-switch>
     </template>
+    <template v-slot:set="">
+  <el-button type="text">操作</el-button>
+  <el-button type="text">删除</el-button>
+    </template>
   </vueTable>
 </template>
 <script>
@@ -37,6 +41,12 @@ export default {
         {
           prop: "address",
           label: "地址"
+        },
+         {
+          prop: "set",
+          label: "操作",
+          slot:"slot",
+          slotName: "set"
         }
       ],
       requestDate:{
