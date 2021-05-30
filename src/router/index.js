@@ -2,8 +2,6 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import login from "../views/acount/login";
 import layout from "../views/layout"
 import i18n from "@/language/index.js"
-import{remove_token,remove_tusername,get_token}from"@/kit/cookieData"
-import "./premin"
 const t =(val)=>{
   return i18n.global.t(val)
 }
@@ -187,20 +185,6 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 });
-const whiterouter=['/login','/registered','/forgotPasd']
-router.beforeEach((to,from,netx)=>{
-  if (get_token()) {
-    if (to.path==='/login') {
-      remove_token()
-      remove_tusername()
-    }
-    netx()
-  }else{
-    if (whiterouter.indexOf(to.path)!==-1) {
-      netx()
-    }else{
-      netx('/login')
-    }
-  }
-})
+
+
 export default router;

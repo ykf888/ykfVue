@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import {get_token}from '@/kit/cookieData.js'
+import {get_token,get_username}from '@/kit/cookieData.js'
 const service = axios.create({
   baseURL: "",
   timeout: 5000,
@@ -8,7 +8,8 @@ const service = axios.create({
 
 // 添加请求拦截器
 service.interceptors.request.use(function (config) {
-  config.headers.Token=get_token()
+  config.headers.Authorization=get_token()
+  config.headers.UserName=get_username()
   // 在发送请求之前做些什么
   return config;
 }, function (error) {

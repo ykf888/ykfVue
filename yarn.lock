@@ -958,6 +958,11 @@
   resolved "https://registry.npm.taobao.org/@soda/get-current-script/download/@soda/get-current-script-1.0.2.tgz#a53515db25d8038374381b73af20bb4f2e508d87"
   integrity sha1-pTUV2yXYA4N0OBtzryC7Ty5QjYc=
 
+"@tinymce/tinymce-vue@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.nlark.com/@tinymce/tinymce-vue/download/@tinymce/tinymce-vue-4.0.2.tgz?cache=0&sync_timestamp=1620717644407&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40tinymce%2Ftinymce-vue%2Fdownload%2F%40tinymce%2Ftinymce-vue-4.0.2.tgz#0705f4ca2a3fe6634eeec89b058386a04a7fe58d"
+  integrity sha1-BwX0yio/5mNO7sibBYOGoEp/5Y0=
+
 "@types/anymatch@*":
   version "1.3.1"
   resolved "https://registry.npm.taobao.org/@types/anymatch/download/@types/anymatch-1.3.1.tgz#336badc1beecb9dacc38bea2cf32adf627a8421a"
@@ -1033,6 +1038,11 @@
   version "7.0.6"
   resolved "https://registry.npm.taobao.org/@types/json-schema/download/@types/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
   integrity sha1-9MfsQ+gbMZqYFRFQMXCfJph4kfA=
+
+"@types/lodash@^4.14.161":
+  version "4.14.170"
+  resolved "https://registry.nlark.com/@types/lodash/download/@types/lodash-4.14.170.tgz#0d67711d4bf7f4ca5147e9091b847479b87925d6"
+  integrity sha1-DWdxHUv39MpRR+kJG4R0ebh5JdY=
 
 "@types/mime@*":
   version "2.0.3"
@@ -3378,12 +3388,13 @@ electron-to-chromium@^1.3.634:
   resolved "https://registry.npm.taobao.org/electron-to-chromium/download/electron-to-chromium-1.3.634.tgz?cache=0&sync_timestamp=1609814040694&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Felectron-to-chromium%2Fdownload%2Felectron-to-chromium-1.3.634.tgz#82ea400f520f739c4f6ff00c1f7524827a917d25"
   integrity sha1-gupAD1IPc5xPb/AMH3UkgnqRfSU=
 
-element-plus@^1.0.1-beta.26:
-  version "1.0.1-beta.26"
-  resolved "https://registry.npm.taobao.org/element-plus/download/element-plus-1.0.1-beta.26.tgz#f24181aab2569b62ca01e63541209b70d524b8ab"
-  integrity sha1-8kGBqrJWm2LKAeY1QSCbcNUkuKs=
+element-plus@^1.0.2-beta.44:
+  version "1.0.2-beta.44"
+  resolved "https://registry.nlark.com/element-plus/download/element-plus-1.0.2-beta.44.tgz#7aff122e6181088223027adb65a4a8321e1ef4e9"
+  integrity sha1-ev8SLmGBCIIjAnrbZaSoMh4e9Ok=
   dependencies:
     "@popperjs/core" "^2.4.4"
+    "@types/lodash" "^4.14.161"
     async-validator "^3.4.0"
     dayjs "1.x"
     lodash "^4.17.20"
@@ -8003,6 +8014,11 @@ timsort@^0.3.0:
   version "0.3.0"
   resolved "https://registry.npm.taobao.org/timsort/download/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
+
+tinymce@^5.8.0:
+  version "5.8.0"
+  resolved "https://registry.nlark.com/tinymce/download/tinymce-5.8.0.tgz#3ffd1d96da2619153bd0bd2023a382052339bb0a"
+  integrity sha1-P/0dltomGRU70L0gI6OCBSM5uwo=
 
 tmp@^0.0.33:
   version "0.0.33"

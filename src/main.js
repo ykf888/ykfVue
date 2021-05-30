@@ -8,15 +8,18 @@ import axios from 'axios'
 import iconfont from "@/public/font/iconfont.css"
 import i18n from "@/language"
 import cookie from 'cookie_js'
-
+import "./router/premin"
+import TEditor from '@/components/TEditor.vue'
+import locale from "element-plus/lib/locale/lang/zh-cn"
 const app =createApp(App)
 app.config.globalProperties.$axios = axios
+app.component('TEditor',TEditor)
 app
   
   .use(store)
   .use(router)
   .use(iconfont)
-  .use(ElementPlus)
+  .use(ElementPlus,{locale})
   .use(cookie)
   .use(i18n)
   .mount("#app");

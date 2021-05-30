@@ -95,7 +95,7 @@ export default {
             let data = res.content.user;
             if (data === true) {
               variable.codeBtn = false;
-               callback();
+              callback();
             } else {
               variable.codeBtn = true;
               callback(new Error("用户名不存在"));
