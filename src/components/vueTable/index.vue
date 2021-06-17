@@ -1,6 +1,6 @@
 <template>
 
-  <el-table :data="data.tableData" style="width: 100%">
+  <el-table :data="data.tableData" style="width: 100%" @selection-change="selectChange">
     <el-table-column
       v-if="data.tableCofige.selection"
       type="selection"
@@ -19,29 +19,46 @@
       </el-table-column>
     </template>
   </el-table>
-   <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      background
-      :current-page="data.currentPage4"
-      :page-sizes="data.pagCofige.sizes"
-      :page-size="data.pagCofige.size"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="data.pagCofige.total">
-    </el-pagination>
+  <div class="pagBox">
+  
+   <div class="fl-r"> 
+       <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        background
+        :current-page="data.currentPage4"
+        :page-sizes="pagCofige.sizes"
+        :page-size="pagCofige.size"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.total">
+       </el-pagination>
+   </div>
+
+  </div>
+  
 </template>
   <script>
-import { onBeforeMount, reactive } from "vue";
+import { getCurrentInstance, onBeforeMount, reactive, watch } from "vue";
 import {requestUrl,getList} from"@/api/common"
+import {getTableData} from "./getTableData"
+import {changePage} from "./changePag"
 export default {
+  emits:["update:tabRow"],
   name: "vueTable",
   props: {
     tableCofige: {
       type: Object,
       default: () => {}
     },
+    tabRow:{
+      type:Object,
+      default: () => {}
+    }
   },
   setup(props) {
+    const { proxy } = getCurrentInstance();
+    const {tableData,getData}=getTableData()
+    const {pagCofige,handleSizeChange,handleCurrentChange} =changePage()
     const data = reactive({
       currentPage4:0,
       tableData:[],
@@ -50,30 +67,29 @@ export default {
         selection: false,
         requestDate:{}
       },
-      pagCofige:{
-        sizes:[10, 20, 30, 40],
-        size:100,
-        total:400,
-      }
+      delItems:[]
     });
-    const handleEdit = () => {};
-    const getTabData=()=>{
-      let request=data.tableCofige.requestDate
-      let requestDate={
-        method:request.method,
-        url:requestUrl[request.taburl],
-        data:{
-          pageSize:10,
-          pageNumber:1
+    // 获取表格数据
+    const getTableItem = (val)=>{
+      let parme={
+          data:{
+            pageSize:pagCofige.size,
+            pageNumber:pagCofige.pageNumber,
+          },
+          cofige:data.tableCofige.requestDate
         }
+     if (val) {
+      let datas = Object.assign({},parme.data,val)
+      let parmes ={
+        data:datas,
+        cofige:data.tableCofige.requestDate
       }
-      getList(requestDate).then(request=>{
-        data.pagCofige.total=request.content.total
-        data.pagCofige.size=request.content.per_page
-        data.tableData=request.content.data
-      }).catch(error=>{
-      })
-    } 
+       getData(parmes)
+     }else{
+       getData(parme)
+     }
+    }
+    // 匹配表格配置key
     const getTableCofige=()=>{
       let tableCofige=props.tableCofige
       let keys =Object.keys(data.tableCofige)
@@ -83,24 +99,37 @@ export default {
        }
       }
     }
-    const handleSizeChange=(val)=>{
-      console.log(val)
+    const selectChange =(val)=>{
+      let tableIdItem ={
+        idItem:val.map(item=>item.member_id)
+      }
+      proxy.$emit("update:tabRow",tableIdItem)
     }
-    const handleCurrentChange=(val)=>{
-      console.log(val)
-    }
-    
     onBeforeMount(() => {
       getTableCofige()
-      getTabData()
+      getTableItem()
     });
-
+    watch(
+      ()=>[pagCofige.size,pagCofige.pageNumber],([pageSize,pageNumber])=>{
+        pagCofige.size=pageSize
+        pagCofige.pageNumber=pageNumber
+        getTableItem()
+      },
+    )
+    watch(
+      ()=>tableData.item,(tabItem)=>{
+        data.tableData=tabItem
+      }
+    )
     return {
-      data,
-      handleEdit,handleSizeChange,handleCurrentChange
+      data,pagCofige,tableData,
+      handleSizeChange,handleCurrentChange,getTableItem,selectChange
     };
   }
 };
 </script>
 <style scoped lang="scss">
+.pagBox{
+  margin-top: 20px;
+}
 </style>

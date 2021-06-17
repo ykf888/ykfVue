@@ -6,36 +6,40 @@
     label-width="80px"
     size="small"
   >
-    <el-form-item label="角色类型">
-      <el-select v-model="data.form.type" placeholder="请选择活动区域">
-        <el-option label="类型1" value="shanghai"></el-option>
-        <el-option label="类型2" value="beijing"></el-option>
+    <el-form-item label="角色类型" prop="type">
+      <el-select v-model="data.form.type" placeholder="请选择角色类型">
+        <el-option label="admin" value="0"></el-option>
+        <el-option label="产品管理员" value="1"></el-option>
+        <el-option label="会员管理员" value="2"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="禁用">
-      <el-select v-model="data.form.open" placeholder="请选择活动区域">
-        <el-option label="禁用" value="shanghai"></el-option>
-        <el-option label="启用" value="beijing"></el-option>
+    <el-form-item label="禁用" prop="status">
+      <el-select v-model="data.form.status" placeholder="请选择">
+        <el-option label="禁用" :value="false"></el-option>
+        <el-option label="启用" :value="true"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="关键字">
-      <el-select v-model="data.form.keyword" placeholder="请选择活动区域">
-        <el-option label="用户名" value="name"></el-option>
+    <el-form-item label="关键字" prop="keyword">
+      <el-select v-model="data.form.keyword" placeholder="请选择">
+        <el-option label="用户名" value="username"></el-option>
         <el-option label="真实姓名" value="truename"></el-option>
-        <el-option label="手机号" value="iphone"></el-option>
+        <el-option label="手机号" value="phone"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item>
+    <el-form-item prop="input">
       <el-input v-model="data.form.input"></el-input>
     </el-form-item>
-    <el-button type="primary" size="small">搜索</el-button>
-    <el-button type="primary" size="small">重置</el-button>
+    <el-button type="primary" size="small" @click="searchFrom">搜索</el-button>
+    <el-button type="primary" size="small" @click="resetForm('form')"
+      >重置</el-button
+    >
     <el-button type="primary" size="small">导出</el-button>
   </el-form>
+
   <div class="addBtn">
     <el-button type="primary" size="small" @click="addItem">新增</el-button>
   </div>
-  <vueTable :tableCofige="tableCofige">
+  <vueTable :tableCofige="tableCofige" ref="table" v-model:tabRow="data.tabRow">
     <template v-slot:swith="data">
       <el-switch
         v-model="data.data.status"
@@ -55,25 +59,38 @@
       <el-button type="text" @click="remove(data)">删除</el-button>
     </template>
   </vueTable>
+  <el-button type="danger" @click="removeAll" size="mini" class="fl-l"
+    >全部删除</el-button
+  >
   <FromDialog
     :fromitem="data.fromData"
     v-model:dialogVisible="data.dialogVisible"
     :openItem="data.openItem"
     :usersItem="data.usersItem"
+    @getList="getList"
   />
+
+  <!-- <input type="text" id="inppp"> -->
 </template>
+
 <script>
 import vueTable from "@c/vueTable";
 import { getCurrentInstance, reactive } from "vue";
 import FromDialog from "./components/dialog";
 import md5 from "js-md5";
-import { UserRemove } from "@/api/user";
+import { UserRemove, UserInfo } from "@/api/user";
 import { global } from "@/kit/massageBox";
 export default {
   components: { vueTable, FromDialog },
   name: "role",
   setup(props) {
+    //     let input = document.getElementById('inppp')
+    //     input.bind("input propertychange",function () {
+    //                     console.log("已经输入了"+$("#inpstart").val().length+"个字。。。");
+    //                 });
+
     const { delFunction } = global();
+
     const { proxy } = getCurrentInstance();
     const tableCofige = reactive({
       tabHead: [
@@ -125,11 +142,12 @@ export default {
     const data = reactive({
       form: {
         type: "",
-        open: "",
+        status: "",
         keyword: "",
         input: ""
       },
-
+      search: {},
+      tabRow: {},
       fromData: {},
       usersItem: [
         { value: "1", label: "admin" },
@@ -149,15 +167,27 @@ export default {
     };
     // 查看详情
     const itemDetails = val => {
-      val.data.type = "details";
-      data.fromData = val;
-      data.dialogVisible = true;
+      let prome = {
+        id: { member_id: val.data.member_id },
+        type: "details"
+      };
+      getUserInfo(prome);
+    };
+    // 获取用户信息
+    const getUserInfo = prome => {
+      UserInfo(prome.id).then(res => {
+        res.content.type = prome.type;
+        data.fromData.data = res.content;
+        data.dialogVisible = true;
+      });
     };
     // 编辑
     const editor = val => {
-      val.data.type = "editor";
-      data.fromData = val;
-      data.dialogVisible = true;
+      let prome = {
+        id: { member_id: val.data.member_id },
+        type: "editor"
+      };
+      getUserInfo(prome);
     };
     // 删除接口
     const delitem = val => {
@@ -165,24 +195,73 @@ export default {
         member_id: val.data.member_id
       };
       UserRemove(id).then(res => {
-        console.log(res);
+        getList();
       });
     };
     // 删除
     const remove = val => {
-      let messageCoign ={
-        meeage:"此操作将永久删除该文件, 是否继续?",
-        title:"提示",
-        confirmButtonText:"确定",
-        cancelButtonText:"取消",
-        type:"warning",
-        function:delitem,
-        data:val,
-        proxy:proxy
-      }
+      let messageCoign = {
+        meeage: "此操作将永久删除该文件, 是否继续?",
+        title: "提示",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        function: delitem,
+        data: val,
+        proxy: proxy
+      };
       delFunction(messageCoign);
     };
-
+    // 批量删除接口
+    const delAll = () => {
+      let id = {
+        member_id: data.tabRow.idItem
+      };
+      UserRemove(id).then(res => {
+        getList();
+      });
+    };
+    // 批量删除
+    const removeAll = () => {
+      let messageCoign = {
+        meeage: "此操作将永久删除这些资料, 是否继续?",
+        title: "提示",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        function: delAll,
+        data: "",
+        proxy: proxy
+      };
+      delFunction(messageCoign);
+    };
+    const getList = val => {
+      proxy.$nextTick(() => {
+        proxy.$refs.table.getTableItem(val);
+      });
+    };
+    // 搜索
+    const searchFrom = () => {
+      let searchFrom = Object.assign({}, data.form);
+      let searchItem = {};
+      if (searchFrom.keyword && searchFrom.input) {
+        searchItem[searchFrom.keyword] = searchFrom.input;
+      }
+      delete searchFrom.keyword;
+      delete searchFrom.input;
+      for (let key in searchFrom) {
+        if (searchFrom[key] === "") {
+          delete searchFrom[key];
+        }
+      }
+      data.search = Object.assign({}, searchFrom, searchItem);
+      getList(data.search);
+    };
+    // 重置搜索表单
+    const resetForm = formName => {
+      console.log(formName);
+      proxy.$refs[formName].resetFields();
+    };
     return {
       tableCofige,
       data,
@@ -190,10 +269,15 @@ export default {
       roleReturn,
       itemDetails,
       editor,
-      remove
+      remove,
+      getList,
+      searchFrom,
+      removeAll,
+      resetForm
     };
   }
 };
 </script>
 <style scoped lang="scss">
+
 </style>

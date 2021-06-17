@@ -23,11 +23,13 @@ service.interceptors.response.use(function (response) {
   let data = response.data
 
   if (data.error_code === 0 && data) {
-    if (data.content === null) {
+    if (data.content === null ) {
       ElMessage.error({message:data.msg});
       return false
+    } else if (data.msg!='success') {
+      ElMessage.success({ message: data.msg});
     }
-    ElMessage.success({ message: data.msg});
+    
   } else {
     ElMessage.error({ message: data.msg });
   }

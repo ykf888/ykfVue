@@ -26,8 +26,8 @@
       <el-form-item label="密码" prop="password" v-show="!data.inputTyoe">
         <el-input v-model="data.dialogFrom.password" type="password" :disabled="data.inputTyoe"></el-input>
       </el-form-item>
-      <el-form-item label="身份证" prop="care_id" v-show="!data.inputTyoe">
-        <el-input v-model="data.dialogFrom.care_id" :disabled="data.inputTyoe"></el-input>
+      <el-form-item label="身份证" prop="card_id" >
+        <el-input v-model="data.dialogFrom.card_id" :disabled="data.inputTyoe"></el-input>
       </el-form-item>
       <el-form-item label="角色类型" prop="role">
         <el-radio-group v-model="data.dialogFrom.role" :disabled="data.inputTyoe">
@@ -58,7 +58,7 @@ import { reactive } from "@vue/reactivity";
 import { getCurrentInstance, onMounted, watch } from "@vue/runtime-core";
 import md5 from "js-md5";
 export default {
-  emits: ["update:dialogVisible"],
+  emits: ["update:dialogVisible","getList"],
   props: {
     fromitem: {
       type: Object,
@@ -88,7 +88,7 @@ export default {
         truename: "",
         phone: "",
         password: "",
-        care_id: "",
+        card_id: "",
         role: "",
         status: "",
       },
@@ -100,7 +100,8 @@ export default {
       let responseData = JSON.parse(JSON.stringify(data.dialogFrom));
       responseData.password = md5(responseData.password);
       AddUser(responseData).then(res => {
-        console.log(res)
+        proxy.$emit('getList')
+        closedDialog()
       });
       }
     const sumbit = () => {
@@ -112,13 +113,19 @@ export default {
         }else{
           addUser()
         }
+        
     };
     const editorItem =()=>{
       let datas = Object.assign({}, props.fromitem.data);
       let resData = JSON.parse(JSON.stringify(data.dialogFrom));
-      resData.password = md5(resData.password);
+      if (resData.password) {
+        resData.password = md5(resData.password);
+      }else{
+        delete resData.password
+      }
       resData.member_id=datas.member_id
       UserUpdate(resData).then(res=>{
+        proxy.$emit('getList')
         closedDialog()
       })
     }
@@ -135,6 +142,9 @@ export default {
     // 表单赋值
     const fromPushData =()=>{
       let datas = Object.assign({}, props.fromitem.data);
+      if (!datas) {
+        return false
+      }
       for (let key in datas) {
             data.dialogFrom[key] = datas[key];
           }
